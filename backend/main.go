@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
+	"web-service-gin/config"
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,9 +14,15 @@ type success_result struct {
 }
 
 func main() {
+	cfg, err := config.GetConfig()
+	if err != nil {
+		fmt.Printf("Error load config")
+		return
+	}
 	router := gin.Default()
 	router.GET("/distance", get_distance)
-	router.Run("127.0.0.1:8080")
+	address := cfg.Server.Host + ":" + cfg.Server.Port
+	router.Run(address)
 }
 
 func get_distance(c *gin.Context) {

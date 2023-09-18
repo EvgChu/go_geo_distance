@@ -1,0 +1,6 @@
+
+# Server configurations
+server:
+  host: "localhost"
+  port: 8080
+  yaapikey: 'secret'
