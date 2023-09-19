@@ -17,10 +17,15 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	router := gin.Default()
-	router.GET("/distance", get_distance)
+	router := setupRouter()
 	address := cfg.Server.Host + ":" + cfg.Server.Port
 	router.Run(address)
+}
+
+func setupRouter() *gin.Engine {
+	router := gin.Default()
+	router.GET("/distance", get_distance)
+	return router
 }
 
 func get_distance(c *gin.Context) {
