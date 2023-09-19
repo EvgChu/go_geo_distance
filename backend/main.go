@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"web-service-gin/config"
 
@@ -14,10 +13,9 @@ type success_result struct {
 }
 
 func main() {
-	cfg, err := config.GetConfig()
+	cfg, err := config.GetConfig("config.yaml")
 	if err != nil {
-		fmt.Printf("Error load config")
-		return
+		panic(err)
 	}
 	router := gin.Default()
 	router.GET("/distance", get_distance)

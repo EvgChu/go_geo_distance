@@ -14,9 +14,9 @@ type Config struct {
 	} `yaml:"server"`
 }
 
-func GetConfig() (cnf *Config, err error) {
+func GetConfig(path string) (cnf *Config, err error) {
 
-	f, err := os.Open("config.yaml")
+	f, err := os.Open(path)
 	if err != nil {
 		return nil, err
 	}
