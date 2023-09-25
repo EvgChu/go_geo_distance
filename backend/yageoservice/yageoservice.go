@@ -1,7 +1,9 @@
 package yageoservice
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
 )
@@ -22,11 +24,35 @@ const (
 )
 
 func makeRequest(address string) (*http.Response, error) {
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s?format=json&apikey=%s&geocode=%s", urlYandexAPI, os.Getenv(apiKeyEnvVar), address), nil)
+	url := fmt.Sprintf("%s?format=json&apikey=%s&geocode=%s", urlYandexAPI, os.Getenv(apiKeyEnvVar), address)
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
 	}
 	return http.DefaultClient.Do(req)
 }
 
-type YaGeoService struct{ apiKey string }
+func parseYandexAPIResponse(r *http.Response) (*YandexAPIResponse, error) {
+	body, err := ioutil.ReadAll(r.Body)
+	defer r.Body.Close()
+	if err != nil {
+		return nil, err
+	}
+
+	var result YandexAPIResponse
+
+	err = json.Unmarshal(body, &result)
+	if err != nil {
+		return nil, err
+	}
+
+	return &result, nil
+}
+
+func Coordinates(address string) (*YandexAPIResponse, error) {
+	resp, err := makeRequest(address)
+	if err != nil {
+		return nil, err
+	}
+	return parseYandexAPIResponse(resp)
+}
