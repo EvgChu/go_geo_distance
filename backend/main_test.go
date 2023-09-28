@@ -18,3 +18,14 @@ func TestBadRequestDistance(t *testing.T) {
 	assert.Equal(t, 400, w.Code)
 
 }
+
+func TestBadAddressDistance(t *testing.T) {
+	router := setupRouter()
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "/distance?address=test", nil)
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, 200, w.Code)
+
+}
