@@ -11,6 +11,7 @@ type Config struct {
 		Port     string `yaml:"port"`
 		Host     string `yaml:"host"`
 		YaApiKey string `yaml:"yaapikey"`
+		LogLevel string `yaml:"log_level"`
 	} `yaml:"server"`
 }
 

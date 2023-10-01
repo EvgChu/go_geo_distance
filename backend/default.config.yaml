@@ -4,3 +4,4 @@ server:
   host: "localhost"
   port: 8080
   yaapikey: 'secret'
+  log_level: "debug"

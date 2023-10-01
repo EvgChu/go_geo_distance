@@ -3,8 +3,10 @@ package main
 import (
 	"net/http"
 	"web-service-gin/config"
+	"web-service-gin/yageoservice"
 
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 )
 
 type success_result struct {
@@ -17,7 +19,14 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	initLoger(cfg.Server.LogLevel)
 	router := setupRouter()
+	log.WithFields(log.Fields{
+		"Server":       cfg.Server.LogLevel,
+		"Host":         cfg.Server.Host,
+		"Port":         cfg.Server.Port,
+		"YandexApiKey": cfg.Server.YaApiKey,
+	}).Info("Start server")
 	address := cfg.Server.Host + ":" + cfg.Server.Port
 	router.Run(address)
 }
@@ -35,6 +44,12 @@ func get_distance(c *gin.Context) {
 		return
 
 	}
+	ygs, err := yageoservice.Coordinates(address)
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Bad address"})
+		return
+	}
+	log.Info("Received request:", ygs.Addr)
 	var distance float64 = 64 //todo add calculate
 	result := success_result{
 		Distance: distance,
@@ -42,4 +57,16 @@ func get_distance(c *gin.Context) {
 	}
 
 	c.IndentedJSON(http.StatusOK, result)
+}
+
+func initLoger(log_level string) {
+
+	// setup logrus
+	logLevel, err := log.ParseLevel(log_level)
+	if err != nil {
+		logLevel = log.InfoLevel
+	}
+
+	log.SetLevel(logLevel)
+	log.SetFormatter(&log.JSONFormatter{})
 }
