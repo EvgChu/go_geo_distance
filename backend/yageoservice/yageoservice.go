@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type YandexAPIResponse struct {
@@ -34,6 +36,7 @@ func makeRequest(address string) (*http.Response, error) {
 
 func parseYandexAPIResponse(r *http.Response) (*YandexAPIResponse, error) {
 	body, err := ioutil.ReadAll(r.Body)
+
 	defer r.Body.Close()
 	if err != nil {
 		return nil, err
@@ -51,6 +54,7 @@ func parseYandexAPIResponse(r *http.Response) (*YandexAPIResponse, error) {
 
 func Coordinates(address string) (*YandexAPIResponse, error) {
 	resp, err := makeRequest(address)
+	log.Infof("Coordinates %#v", resp)
 	if err != nil {
 		return nil, err
 	}
